@@ -1,0 +1,263 @@
+# KOKKOS Interactive Platform - Progress Log
+
+## Project Context
+Transforming KOKKOS from a static HTML wellness assessment site into a full interactive platform with:
+- User accounts (Supabase Auth)
+- Email capture (Resend)
+- Interactive assessment flows
+- Analytics dashboard
+
+## Design System Reference
+- Colors: sage-dark (#3d4a3d), sage (#5d7a4a), cream (#f8f6f3)
+- Fonts: Cormorant Garamond (headings), Quicksand (body)
+- Style: Elegant, spiritual, minimalist
+
+## Learnings & Context
+(Append learnings here after each iteration)
+
+---
+
+### Iteration 1 - S01: Initialize Next.js project
+Status: COMPLETE ✓
+
+**What was done:**
+- Created Next.js 14 project structure with App Router
+- Configured Tailwind CSS with KOKKOS color palette (sage, cream, chakra colors)
+- Added Cormorant Garamond and Quicksand fonts
+- Created Header component with scroll effect and mobile menu
+- Created Footer component matching original design
+- Created homepage with hero, bridge, seeker, teaser, and CTA sections
+- Set up environment variables template
+
+**Key files created:**
+- `package.json` - Dependencies including Next.js 14, Supabase, Tailwind
+- `tailwind.config.ts` - KOKKOS design system colors and fonts
+- `src/app/layout.tsx` - Root layout with Header/Footer
+- `src/app/page.tsx` - Homepage
+- `src/components/Header.tsx` - Sticky header with mobile support
+- `src/components/Footer.tsx` - Site footer
+
+**Learnings:**
+- KOKKOS uses a sage green palette with cream backgrounds
+- Chakra colors are used for accent dots (root=red, heart=green, crown=purple)
+- Header becomes sticky with blur effect on scroll
+- Mobile menu slides in from right
+
+**Note:** Network disabled in this environment - user needs to run `npm install` locally
+
+---
+
+### Iteration 2 - S02: Convert static pages to Next.js routes
+Status: COMPLETE ✓
+
+**What was done:**
+- Created /about page with Kate intro, values section, CTA
+- Created /contact page with contact form (client component with state)
+- Created /assessments page with journey cards for all 3 assessments
+- Created assessments layout with its own footer (simpler than main site)
+- Used Next.js Image component for optimized images
+
+**Key files created:**
+- `src/app/about/page.tsx` - About page with metadata
+- `src/app/contact/page.tsx` - Contact form (client component)
+- `src/app/assessments/page.tsx` - Assessment selection page
+- `src/app/assessments/layout.tsx` - Custom layout for assessments section
+
+**Learnings:**
+- Contact form uses useState for submission state and success display
+- Assessments section has its own simpler header (just logo) vs main nav
+- Used route-specific layout for assessments to have different footer style
+- Form styling uses Tailwind focus states: focus:border-sage focus:ring-[3px] focus:ring-sage/10
+
+**Note:** Layout nesting means main header shows on assessments too - may want to use route groups later to have completely separate layouts
+
+---
+
+### Iteration 3 - S03: Set up Supabase and database schema
+Status: COMPLETE ✓
+
+**What was done:**
+- Created Supabase client for browser (src/lib/supabase/client.ts)
+- Created Supabase server client for server components (src/lib/supabase/server.ts)
+- Created middleware for auth session refresh (src/lib/supabase/middleware.ts)
+- Created root middleware.ts for Next.js
+- Created database schema SQL (supabase/schema.sql)
+- Created TypeScript types for all database tables
+- Updated .env.local.example with detailed instructions
+
+**Database tables created:**
+- `profiles` - Extends auth.users with full_name, avatar_url
+- `assessment_results` - Stores completed assessments (supports anonymous)
+- `email_subscribers` - Newsletter signups with unsubscribe tracking
+- `contact_messages` - Contact form submissions
+
+**Key features:**
+- RLS (Row Level Security) policies on all tables
+- Auto-create profile on signup via trigger
+- Analytics views for admin dashboard (daily_signups, assessment_stats, daily_assessments)
+- Email validation constraints
+- Updated_at auto-trigger
+
+**Learnings:**
+- Supabase SSR package (@supabase/ssr) handles cookie management for Next.js
+- Middleware refreshes auth tokens on every request
+- Assessment results can be anonymous (user_id NULL) for non-logged-in users
+- Views in Postgres are useful for pre-aggregated analytics queries
+
+---
+
+### Iteration 4 - S04: Create authentication UI (signup/login)
+Status: COMPLETE ✓
+
+**What was done:**
+- Created /auth/signup page with form (name, email, password)
+- Created /auth/login page with form (email, password)
+- Created /auth/callback route for email confirmation handling
+- Created auth layout (no header/footer - minimal design)
+- Forms use Supabase auth methods with loading states
+- Success state shows "check your email" message
+- Error handling with user-friendly messages
+
+**Key files created:**
+- `src/app/auth/signup/page.tsx` - Signup form with success state
+- `src/app/auth/login/page.tsx` - Login form
+- `src/app/auth/callback/route.ts` - Email confirmation handler
+- `src/app/auth/layout.tsx` - Minimal layout for auth pages
+
+**Learnings:**
+- Supabase signUp with emailRedirectTo for confirmation flow
+- Exchange code for session in callback route
+- useRouter for programmatic navigation after login
+- router.refresh() needed after auth state change to update server components
+
+---
+
+### Iteration 5 - S05: Create user dashboard page
+Status: COMPLETE ✓
+
+**What was done:**
+- Created /dashboard page (server component with auth check)
+- Shows user name and email from profile
+- Lists completed assessments with dates
+- Empty state for new users with CTA
+- Created LogoutButton client component
+- Dashboard has its own header layout
+- Redirects to /auth/login if not authenticated
+
+**Key files created:**
+- `src/app/dashboard/page.tsx` - Main dashboard (server component)
+- `src/app/dashboard/LogoutButton.tsx` - Client component for logout
+- `src/app/dashboard/layout.tsx` - Dashboard-specific layout
+
+**Learnings:**
+- Server components can directly check auth and redirect
+- supabase.auth.getUser() for server-side auth check
+- Client components needed for interactive elements (logout button)
+- Assessment results queried and displayed with date formatting
+- Empty state design important for new user experience
+
+---
+
+### Iteration 6 - S06: Create newsletter signup component
+Status: COMPLETE ✓
+
+**What was done:**
+- Created EmailCapture component with form, loading, success states
+- Component stores emails in email_subscribers table
+- Handles duplicate emails gracefully (shows success anyway)
+- Two variants: 'default' for sections, 'footer' for footer styling
+- Added EmailCapture to homepage (new newsletter section)
+- Added EmailCapture to Footer component
+- Tracks source of subscription (homepage, footer, etc.)
+
+**Key files created/modified:**
+- `src/components/EmailCapture.tsx` - Reusable email capture form
+- `src/components/index.ts` - Added EmailCapture export
+- `src/app/page.tsx` - Added newsletter section with EmailCapture
+- `src/components/Footer.tsx` - Added newsletter section with EmailCapture
+
+**Learnings:**
+- Supabase unique constraint error code is '23505' for duplicate emails
+- Showing success for duplicates is better UX than error
+- Component variants allow same logic with different styling
+- Source tracking helps understand where subscribers come from
+
+---
+
+### Iteration 7 - S07: Build Seven Seeds assessment data structure
+Status: COMPLETE ✓
+
+**What was done:**
+- Created types.ts with all assessment type definitions
+- Created seven-seeds.ts with:
+  - 7 seed definitions (root through crown) with colors, themes, virtues
+  - 91 questions (13 per seed)
+  - calculateSevenSeedsScores() function
+  - getSeedInterpretation() function for personalized text
+- Scoring calculates percentage and level (blocked/developing/balanced/flourishing)
+
+**Key files:**
+- `src/data/assessments/types.ts` - Type definitions for all assessments
+- `src/data/assessments/seven-seeds.ts` - Questions and scoring logic
+- `src/data/assessments/index.ts` - Exports
+
+**Learnings:**
+- 91 questions = 13 per seed × 7 seeds
+- Likert scale 1-5 (Strongly Disagree to Strongly Agree)
+- Levels: <40% blocked, 40-60% developing, 60-80% balanced, 80%+ flourishing
+- Each seed has interpretations for all 4 levels
+
+---
+
+### Iteration 8 - S08: Build interactive assessment flow component
+Status: COMPLETE ✓
+
+**What was done:**
+- Created AssessmentFlow component with:
+  - Progress bar at top
+  - Question display with number badge
+  - Likert scale answer options (radio-button style)
+  - Previous/Next navigation
+  - Smooth transitions between questions
+  - Accent color prop for different assessments
+- Uses local state to store answers
+- Calls onComplete callback with all answers when finished
+
+**Key files:**
+- `src/components/AssessmentFlow.tsx` - Reusable assessment flow
+- `src/components/index.ts` - Added export
+
+**Learnings:**
+- Fixed navigation bar at bottom for easy thumb access on mobile
+- Transitions using opacity/transform for smooth feel
+- Disabled state styling for prev button on first question
+- Progress percentage calculation: (current + 1) / total * 100
+
+---
+
+### Iteration 9 - S09: Implement Seven Seeds assessment page
+Status: COMPLETE ✓
+
+**What was done:**
+- Created /assessments/seven-seeds page with 3 stages:
+  1. Intro with gender selection
+  2. Assessment flow (91 questions)
+  3. Results display with all 7 seeds
+- Results show percentage, level badge, progress bar, interpretation
+- Saves to database (for logged-in users or anonymous)
+- Prompts to create account if not logged in
+- Links to next assessment or dashboard
+
+**Key files:**
+- `src/app/assessments/seven-seeds/page.tsx` - Full assessment page
+
+**Learnings:**
+- State machine pattern (stage) works well for multi-step flows
+- Results auto-save on completion (async, non-blocking)
+- Different CTA based on logged-in status
+- Color-coded by seed with chakra colors
+
+---
+
+### Iteration 10
+Started: [pending]

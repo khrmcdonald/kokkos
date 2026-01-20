@@ -1,0 +1,252 @@
+{
+  "projectName": "KOKKOS Interactive Platform",
+  "description": "Transform KOKKOS from a static HTML site into a full interactive assessment platform with user accounts, email capture, interactive assessments, and analytics.",
+  "branchName": "feature/interactive-platform",
+  "techStack": {
+    "framework": "Next.js 14 (App Router)",
+    "database": "Supabase (Postgres + Auth)",
+    "email": "Resend",
+    "styling": "Tailwind CSS (preserving existing design system)",
+    "hosting": "Vercel"
+  },
+  "designSystem": {
+    "colors": {
+      "sage-dark": "#3d4a3d",
+      "sage": "#5d7a4a",
+      "sage-medium": "#6b7c5e",
+      "sage-light": "#8a9a7e",
+      "sage-pale": "#c4d4b8",
+      "cream": "#f8f6f3",
+      "cream-dark": "#f5f2ed",
+      "text-dark": "#2d3a2d",
+      "text-body": "#4a5a4a",
+      "text-muted": "#6b7c5e"
+    },
+    "fonts": {
+      "heading": "Cormorant Garamond",
+      "body": "Quicksand"
+    }
+  },
+  "userStories": [
+    {
+      "id": "S01",
+      "title": "Initialize Next.js project with existing design system",
+      "priority": 1,
+      "description": "Set up Next.js 14 with App Router, Tailwind CSS configured with KOKKOS color palette and fonts. Create basic layout component matching existing header/footer design.",
+      "acceptanceCriteria": [
+        "Next.js 14 project created with TypeScript",
+        "Tailwind configured with KOKKOS colors and fonts",
+        "Layout component with header and footer matching existing design",
+        "Homepage renders with hero section",
+        "Dev server runs without errors"
+      ],
+      "passes": true
+    },
+    {
+      "id": "S02",
+      "title": "Convert static pages to Next.js routes",
+      "priority": 2,
+      "description": "Migrate existing HTML pages (home, about, contact, assessments index) to Next.js pages while preserving all styling and content.",
+      "acceptanceCriteria": [
+        "/ (home) page matches original design",
+        "/about page matches original design",
+        "/contact page matches original design",
+        "/assessments page matches original design",
+        "All navigation links work correctly",
+        "Images load correctly from /public"
+      ],
+      "passes": true
+    },
+    {
+      "id": "S03",
+      "title": "Set up Supabase project and database schema",
+      "priority": 3,
+      "description": "Create Supabase project, define database schema for users and assessment results. Set up environment variables.",
+      "acceptanceCriteria": [
+        "Supabase client configured in project",
+        "Environment variables set up (.env.local.example provided)",
+        "Database schema created: users, assessment_results, email_subscribers tables",
+        "Row Level Security policies defined",
+        "TypeScript types generated for database"
+      ],
+      "passes": true
+    },
+    {
+      "id": "S04",
+      "title": "Create authentication UI (signup/login pages)",
+      "priority": 4,
+      "description": "Build authentication pages matching KOKKOS design. Include email/password auth with Supabase.",
+      "acceptanceCriteria": [
+        "/auth/signup page with form matching design system",
+        "/auth/login page with form matching design system",
+        "Form validation with helpful error messages",
+        "Loading states during auth operations",
+        "Redirect to /dashboard after successful auth"
+      ],
+      "passes": true
+    },
+    {
+      "id": "S05",
+      "title": "Create user dashboard page",
+      "priority": 5,
+      "description": "Build user dashboard showing their assessment history and profile. Protected route requiring authentication.",
+      "acceptanceCriteria": [
+        "/dashboard page accessible only when logged in",
+        "Redirects to /auth/login if not authenticated",
+        "Shows user's name and email",
+        "Shows list of completed assessments (empty state for new users)",
+        "Link to start new assessment",
+        "Logout button works"
+      ],
+      "passes": true
+    },
+    {
+      "id": "S06",
+      "title": "Create newsletter signup component",
+      "priority": 6,
+      "description": "Build reusable email capture component. Store subscribers in Supabase. Add to homepage and footer.",
+      "acceptanceCriteria": [
+        "EmailCapture component with input and submit button",
+        "Matches KOKKOS design system",
+        "Stores email in email_subscribers table",
+        "Shows success/error states",
+        "Prevents duplicate subscriptions",
+        "Component added to homepage CTA section",
+        "Component added to footer"
+      ],
+      "passes": true
+    },
+    {
+      "id": "S07",
+      "title": "Build Seven Seeds assessment data structure",
+      "priority": 7,
+      "description": "Create the question data and scoring logic for Seven Seeds assessment (91 questions mapping to 7 seed areas).",
+      "acceptanceCriteria": [
+        "JSON data file with all 91 questions",
+        "Questions grouped by seed/chakra area",
+        "Scoring function calculates results per seed",
+        "TypeScript types for questions and results",
+        "Unit tests for scoring logic"
+      ],
+      "passes": true
+    },
+    {
+      "id": "S08",
+      "title": "Build interactive assessment flow component",
+      "priority": 8,
+      "description": "Create reusable assessment flow component: progress bar, question display, answer selection, navigation between questions.",
+      "acceptanceCriteria": [
+        "AssessmentFlow component accepts questions array",
+        "Shows current question with progress indicator",
+        "Answer options (Likert scale) styled to design system",
+        "Previous/Next navigation",
+        "Stores answers in local state",
+        "Calls onComplete callback with all answers",
+        "Smooth transitions between questions"
+      ],
+      "passes": true
+    },
+    {
+      "id": "S09",
+      "title": "Implement Seven Seeds assessment page",
+      "priority": 9,
+      "description": "Create the Seven Seeds assessment route using the AssessmentFlow component. Show results at completion.",
+      "acceptanceCriteria": [
+        "/assessments/seven-seeds page with gender selection",
+        "Assessment flow with all 91 questions",
+        "Results page showing scores for each seed",
+        "Visual representation of results (chart or visual)",
+        "Save results to database if user is logged in",
+        "Prompt to create account if not logged in"
+      ],
+      "passes": true
+    },
+    {
+      "id": "S10",
+      "title": "Build The Balance assessment data and page",
+      "priority": 10,
+      "description": "Create question data and implement The Balance assessment (44 questions on masculine/feminine energy).",
+      "acceptanceCriteria": [
+        "JSON data file with 44 questions",
+        "Scoring logic for masculine/feminine balance",
+        "/assessments/the-balance page with gender selection",
+        "Results show balance visualization",
+        "Save results to database if logged in"
+      ],
+      "passes": true
+    },
+    {
+      "id": "S11",
+      "title": "Build The Compass assessment data and page",
+      "priority": 11,
+      "description": "Create question data and implement The Compass of Seasons assessment (40 questions).",
+      "acceptanceCriteria": [
+        "JSON data file with 40 questions",
+        "Scoring logic for seasons/fear response",
+        "/assessments/the-compass page with gender selection",
+        "Results show current season with explanation",
+        "Save results to database if logged in"
+      ],
+      "passes": true
+    },
+    {
+      "id": "S12",
+      "title": "Create detailed results pages with personalized insights",
+      "priority": 12,
+      "description": "Enhance results display with detailed explanations, personalized recommendations, and shareable results.",
+      "acceptanceCriteria": [
+        "Each assessment has rich results page",
+        "Personalized text based on scores",
+        "Recommended virtues/practices based on results",
+        "Share results button (generates shareable link)",
+        "Download results as PDF option",
+        "Email results option"
+      ],
+      "passes": true
+    },
+    {
+      "id": "S13",
+      "title": "Build admin analytics dashboard",
+      "priority": 13,
+      "description": "Create admin-only dashboard showing platform analytics: user signups, assessments completed, email subscribers.",
+      "acceptanceCriteria": [
+        "/admin/dashboard route (protected, admin only)",
+        "Total users count and signup trend chart",
+        "Total assessments completed by type",
+        "Email subscribers count and trend",
+        "Date range filter for all metrics",
+        "Data loads from Supabase"
+      ],
+      "passes": true
+    },
+    {
+      "id": "S14",
+      "title": "Add email integration with Resend",
+      "priority": 14,
+      "description": "Set up Resend for transactional emails: welcome email on signup, assessment results email.",
+      "acceptanceCriteria": [
+        "Resend configured with API key",
+        "Welcome email sent on user signup",
+        "Results email sent when user completes assessment",
+        "Email templates match KOKKOS branding",
+        "Unsubscribe link in all emails"
+      ],
+      "passes": true
+    },
+    {
+      "id": "S15",
+      "title": "Polish, responsive design, and final QA",
+      "priority": 15,
+      "description": "Final polish pass: ensure all pages are fully responsive, add loading states, error boundaries, SEO meta tags.",
+      "acceptanceCriteria": [
+        "All pages work on mobile (375px) to desktop (1440px)",
+        "Loading skeletons for async content",
+        "Error boundaries with friendly error messages",
+        "SEO meta tags on all pages",
+        "OpenGraph images for social sharing",
+        "Lighthouse score > 90 for performance"
+      ],
+      "passes": true
+    }
+  ]
+}

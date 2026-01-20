@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Quicksand:wght@300;400;500;600;700&display=swap');
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply font-body bg-cream text-text-body leading-relaxed;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center px-7 py-3 text-sm font-semibold text-white rounded-full transition-all duration-300;
+    background: linear-gradient(135deg, theme('colors.sage.DEFAULT') 0%, theme('colors.sage.medium') 100%);
+    box-shadow: 0 4px 20px rgba(93, 122, 74, 0.25);
+  }
+  
+  .btn:hover {
+    @apply -translate-y-0.5;
+    box-shadow: 0 8px 30px rgba(93, 122, 74, 0.35);
+  }
+  
+  .btn-white {
+    @apply bg-white text-sage-dark;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .btn-white:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  }
+  
+  .nav-link {
+    @apply text-[0.95rem] font-medium text-text-body no-underline tracking-wide transition-colors duration-300 relative;
+  }
+  
+  .nav-link::after {
+    content: '';
+    @apply absolute -bottom-1.5 left-0 w-0 h-0.5 transition-all duration-300;
+    background: linear-gradient(90deg, theme('colors.sage.DEFAULT'), theme('colors.sage.medium'));
+  }
+  
+  .nav-link:hover {
+    @apply text-sage;
+  }
+  
+  .nav-link:hover::after {
+    @apply w-full;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
